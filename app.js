@@ -38,7 +38,9 @@ app.get('/', (req, res) => {
     res.render('public/index');
 });
 
-
+    // usuarios
+    const usuario = require('./routes/usuarios');
+    app.use('/usuarios', usuario);
 
 /// Outros
 app.listen(PORT, () => {
