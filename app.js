@@ -8,9 +8,19 @@ const handlebars = require('express-handlebars');
 const path = require('path');
     // mongoose
 const mongoose = require('mongoose');
+    // flash e session
+const flash = require('connect-flash');
+const session = require('express-session');
 
 
 /// configs
+    // session
+    app.use(session({
+        secret : "BoraTentarFazerIsso",
+        resave : true,
+        saveUninitialized : true
+    }));
+    app.use(flash());
     // handlebars
     app.engine('handlebars', handlebars.engine({
         defaultLayout: 'main', 
@@ -21,6 +31,10 @@ const mongoose = require('mongoose');
     }));
     app.set('view engine', 'handlebars');
 
+    // "body parser" - receber dados de requisiçoes http
+    app.use(express.urlencoded({extended: true}));
+    app.use(express.json());
+
     // bootstrap - public
     app.use(express.static(path.join(__dirname + "/public")));
 
@@ -30,6 +44,13 @@ const mongoose = require('mongoose');
         console.log('mongodb conectado!');
     }).catch((err) => {
         console.log('erro ao conectar com o banco!')
+    });
+
+    // variáveis globais e flash
+    app.use((req, res, next) => {
+        res.locals.success_msg = req.flash('success_msg');
+        res.locals.error_msg = req.flash('error_msg');
+        next();
     });
 
 

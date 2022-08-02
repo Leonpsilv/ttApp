@@ -14,6 +14,9 @@ const Usuario = new Schema({
         type : String,
         required : true
     },
+    biografia : {
+        type : String,
+    },
     senha : {
         type : String,
         required : true
