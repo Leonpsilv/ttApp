@@ -47,30 +47,47 @@ router.post('/registrar/novo', (req, res) => {
 
     // verificando se o usuário já está cadastrado
     Usuario.find({arroba : arrobaFinal}).then((usuario) => {
-        if(usuario.length > 1) {
-            console.log('o usuario já existe!');
-
+        if(usuario.length > 0){
+            req.flash('error_msg','nome de usuário ou email já utilizados em outra conta!');
+            res.redirect('/usuarios/registrar');
         }else {
-            const newUsuario = {
-                nome : nome,
-                arroba : arrobaFinal,
-                biografia : biografia,
-                email : email,
-                senha : senha
-            }
-            new Usuario(newUsuario).save().then(() => {
-                req.flash('success_msg', 'usuario salvo com sucesso!');
-                res.redirect('/usuarios/');
+            Usuario.find({email: email}).then((usuario) => {
+                if(usuario.length > 0){
+                    req.flash('error_msg','nome de usuário ou email já utilizados em outra conta!');
+                    res.redirect('/usuarios/registrar');
+                }else{
+                    const newUsuario = {
+                        nome : nome,
+                        arroba : arrobaFinal,
+                        biografia : biografia,
+                        email : email,
+                        senha : senha
+                    }
+                    new Usuario(newUsuario).save().then(() => {
+                        req.flash('success_msg', 'usuário salvo com sucesso!');
+                        res.redirect('/usuarios/');
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Erro ao salvar os dados!');
+                        res.redirect('/usuarios/registrar');
+                    });
+                }
+                
             }).catch((err) => {
-                console.log('Erro ao salvar usuario! ' + err);
+                req.flash('error_msg', 'Erro ao verificar se o usuario já existe!');
+                res.redirect('/usuarios/');
             });
         }
     }).catch(() => {
-        console.log('Erro ao verificar se o usuario já existe!');
+        req.flash('error_msg', 'Erro ao verificar se o usuario já existe!');
+        res.redirect('/usuarios/');
     });
 
 
 
+
+});
+
+router.get('/editar', (req, res) => {
 
 });
 
