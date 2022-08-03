@@ -113,13 +113,53 @@ router.post('/editar', (req, res) => {
     const nome = req.body.nome;
     const nomeUsuario = req.body.arroba;
     const biografia = req.body.biografia;
-    const email = req.body.email;
+    const email = req.body.email; // modificar o email não será permitido 
     const senha = req.body.senha;
     const confirmaSenha = req.body.confirmaSenha;
     const id = req.body.id;
-    let arrobaFinal = '@';
 
-    arrobaFinal += nomeUsuario;
+    //// FAZER VALIDAÇÃO
+    /// COMPARAR A SENHA ANTIGA COM A DIGITADA
+    
+    const arrobaFinal = '@' + nomeUsuario.replace(/@/g, '');
+
+function salvaNoBanco (id) {
+    Usuario.findOne({_id : id}).then((usuario) => {
+        usuario.nome = nome;
+        usuario.arroba = arrobaFinal;
+        usuario.biografia = biografia;
+        usuario.senha = senha;
+
+        usuario.save().then(() => {
+            req.flash('success_msg', 'usuário editado com sucesso!');
+            res.redirect('/usuarios/');
+        }).catch((err) => {
+            req.flash('error_msg', 'ERRO INTERNO: não foi possível salvar as alterações');
+            res.redirect('/usuarios/');
+        });
+    }).catch((err) => {
+        console.log('deu merda: '+ err);
+    });
+}
+
+/// impedindo, por meio do id, que o usuário não consiga repetir o "arroba" de outro usuário    
+    Usuario.findOne({arroba : arrobaFinal}).then((usuario) => {
+        const idUsuario = usuario._id;
+        if (idUsuario == id){
+            salvaNoBanco(id);
+        }else{
+            Usuario.findOne({_id : id}).then((usu) => {
+                req.flash('error_msg', 'nome de usuário já utilizado!');
+                res.redirect('/usuarios/editar/' + usu.arroba);
+            }).catch((err) => {
+                req.flash('error_msg', 'erro interno ao realizar operação!');
+                res.redirect('/usuarios/');
+            });
+        }
+    }).catch((err) => {
+        salvaNoBanco(id);
+    });
+
     
 });
 
