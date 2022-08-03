@@ -1,3 +1,21 @@
 <h1>USUARIOS</h1>
 
 <a href="/usuarios/registrar"><button class="btn btn-sm">Cadastrar novo usuario</button></a>
+
+<hr>
+
+{{#each usuarios}}
+    <div class="card mt-2">
+        <div class="card-body">
+            <h2>{{nome}}</h2>
+            <small>{{arroba}}</small>
+            <hr>
+            <h4>Bio: {{biografia}}</h4>
+            <small class="mt-3">email: {{email}}</small>
+            <br>
+            <small>Entrou em: {{date}}</small>
+        </div>
+    </div>
+{{else}}
+<h1>Nenhum usuário cadastrado :(</h1> 
+{{/each}}

@@ -8,7 +8,13 @@ require('../models/usuarioSchema');
 const Usuario = mongoose.model('usuarios');
 
 router.get('/', (req, res) => {
-    res.render('usuarios/index');
+    Usuario.find().sort({date : 'desc'}).then((usuarios) => {
+        res.render('usuarios/index', {usuarios : usuarios});
+    }).catch((err) => {
+        req.flash('error_msg', 'falha ao buscar os usuários no banco!');
+        res.redirect('/');
+    });
+
 });
 
 router.get('/registrar', (req, res) => {
