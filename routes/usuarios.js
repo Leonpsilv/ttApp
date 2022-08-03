@@ -28,22 +28,30 @@ router.post('/registrar/novo', (req, res) => {
     const email = req.body.email;
     const senha = req.body.senha;
     const confirmaSenha = req.body.confirmaSenha;
+    let erros = [];
+    console.log(senha, confirmaSenha);
     let arrobaFinal = '@';
 
     if(!nome ||nome.length < 1) {
-        req.flash('error_msg', 'Nome inválido: muito curto'); 
-        res.redirect('/usuarios/registrar');
+        erros.push({texto : 'nome inválido!'});
     }
     if(!nomeUsuario || nomeUsuario.length < 3) { 
-        req.flash('error_msg', 'Nome de usuário inválido: muito curto'); 
-        res.redirect('/usuarios/registrar');
+        erros.push({texto : 'nome de usuário inválido!'});
     }
     if(email.length < 6) { 
-        req.flash('error_msg', 'Email inválido: muito curto'); 
-        res.redirect('/usuarios/registrar');
+        erros.push({texto : 'email inválido!'});
     }
-    //////////////////////////////////////////////////////////// arrumar validação ///////////////////////
-    arrobaFinal += nomeUsuario;
+    if(senha.length < 1) {
+        erros.push({texto : 'digite uma senha!'})
+    }
+    if (confirmaSenha !== senha) {
+        erros.push({texto : 'as senhas não batem!'});
+    }
+    if(erros.length > 0){
+        res.render('usuarios/formRegistro', {error : erros})
+    }else{
+
+        arrobaFinal += nomeUsuario;
 
     // verificando se o usuário já está cadastrado
     Usuario.find({arroba : arrobaFinal}).then((usuario) => {
@@ -82,9 +90,8 @@ router.post('/registrar/novo', (req, res) => {
         res.redirect('/usuarios/');
     });
 
-
-
-
+    }
+   
 });
 
 router.get('/editar/:arroba', (req, res) => {
