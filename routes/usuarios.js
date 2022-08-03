@@ -87,8 +87,44 @@ router.post('/registrar/novo', (req, res) => {
 
 });
 
-router.get('/editar', (req, res) => {
+router.get('/editar/:arroba', (req, res) => {
+    const arroba = req.params.arroba;
+    Usuario.findOne({arroba : arroba}).then((usuario) => {
+        if(usuario){
+            res.render('usuarios/formEditar', {usuario : usuario});
+        }else{
+            req.flash('error_msg', 'Usuario não encontrado!');
+            res.redirect('/usuarios/');
+        }
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao buscar o usuário no banco!');
+        res.redirect('/usuarios/');
+    });
+});
 
+router.post('/editar', (req, res) => {
+    const nome = req.body.nome;
+    const nomeUsuario = req.body.arroba;
+    const biografia = req.body.biografia;
+    const email = req.body.email;
+    const senha = req.body.senha;
+    const confirmaSenha = req.body.confirmaSenha;
+    const id = req.body.id;
+    let arrobaFinal = '@';
+
+    arrobaFinal += nomeUsuario;
+    
+});
+
+router.get('/apagar/:id', (req, res) => {
+    const id = req.params.id;
+    Usuario.deleteOne({_id : id}).then(() => {
+        req.flash('success_msg', 'Usuario apagado com sucesso!');
+        res.redirect('/usuarios/');
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao apagar usuário!');
+        res.redirect('/usuarios/');
+    });
 });
 
 module.exports = router;

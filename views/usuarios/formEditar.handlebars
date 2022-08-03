@@ -1,0 +1,33 @@
+    <h1> Editar usuário: </h1>
+<div class="card">
+    <div class="card-body">
+        <form action="/usuarios/editar" method="POST">
+            <label for="nome" class="mt-1">Nome: </label>
+            <input type="text" class="form-control" name="nome" placeholder="Digite o nome desejado aqui" value="{{usuario.nome}}">
+
+            <label for="arroba" class="mt-2">Nome de usuário: </label>
+            <input type="text" class="form-control" name="arroba" placeholder="Digite seu nome de usuário. Obs: deve ser único" value="{{usuario.arroba}}">
+
+            <label for="biografia" class="mt-2">Biografia: </label>
+            <textarea class="form-control" name="biografia" placeholder="Digite a sua biografia (opcional)">{{usuario.biografia}}</textarea>
+
+            <label for="email" class="mt-2">Email: </label>
+            <input type="email" class="form-control" name="email" placeholder="Digite seu email" value="{{usuario.email}}">
+
+            <label for="senha" class="mt-2">Senha: </label>
+            <input type="password" class="form-control" name="senha" placeholder="Digite a sua senha" value="{{usuario.senha}}">
+
+            <label for="cofirmaSenha" class="mt-2">Confirme a sua senha: </label>
+            <input type="password" class="form-control" name="confirmaSenha" placeholder="Confirme a sua senha">
+
+            <input type="hidden" name="id" value="{{usuario._id}}">
+
+            <button type="submit" class="btn btn-sm btn-success mt-4">Salvar edições</button>
+        </form>
+        <hr>
+        <h2>Apagar usuário</h2>
+        <small>Obs: não será possível recuperá-lo </small>
+        <a href="/usuarios/apagar/{{usuario._id}}"><button class="btn btn-sm btn-danger m-2">Deletar</button></a>
+
+    </div>
+</div>
