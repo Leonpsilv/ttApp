@@ -33,6 +33,16 @@ router.post('/login/efetuar', passport.authenticate('local', {
     res.redirect('/');
 });
 
+router.get('/logout', (req, res, next) => {
+    req.logout(function(err) {
+        if (err) { 
+            return next(err) 
+        }
+        req.flash('success_msg', 'Deslogado com sucesso!');
+        res.redirect('/');
+      })
+});
+
 router.get('/registrar', (req, res) => {
     res.render('usuarios/formRegistro');
 });
