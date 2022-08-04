@@ -1,4 +1,13 @@
-<div class="test">
-    <h1>Página inicial</h1>
-    <button class="btn btn-success">SE TA VERDE ENTAO DEU CERTO</button>
+<div class="bg-light p-5 rounded-lg m-3">
+    <h1 class="display-4">Bem vindo ao TUITER do Leo!</h1>
+    <p class="lead"> Esse é um site desenvolvido em Node, Express e MongoDB. Apenas para estudos e prática. seja muito bem vindo e aproveite todas as funcionalidades desenvolvidas! Obs: esse o Elon Musk compraria!</p>
+    <hr class="my-4">
+
+    {{#if users}}
+    {{else}}
+    <p>Para ter acesso a todas as funcionalidades do site, será necessário possuir uma conta.</p>
+    <a class="btn btn-primary btn-lg m-1" href="/usuarios/registrar" role="button">Criar conta</a>
+    <a class="btn btn-primary btn-lg m-1" href="/usuarios/login" role="button">Fazer login</a>
+    <hr>
+    {{/if}}
 </div>
