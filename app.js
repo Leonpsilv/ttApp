@@ -11,6 +11,10 @@ const mongoose = require('mongoose');
     // flash e session
 const flash = require('connect-flash');
 const session = require('express-session');
+    //auth
+const passport = require('passport');
+require('./config/auth')(passport);
+
 
 
 /// configs
@@ -19,8 +23,13 @@ const session = require('express-session');
         secret : "BoraTentarFazerIsso",
         resave : true,
         saveUninitialized : true
-    }));
+    })); // configurando auth antes da sessão
+        // auth
+        app.use(passport.initialize());
+        app.use(passport.session());
+
     app.use(flash());
+
     // handlebars
     app.engine('handlebars', handlebars.engine({
         defaultLayout: 'main', 
@@ -53,7 +62,6 @@ const session = require('express-session');
         res.locals.error = req.flash('error');
         next();
     });
-
 
 /// Rotas
 app.get('/', (req, res) => {

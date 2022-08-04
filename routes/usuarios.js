@@ -6,6 +6,10 @@ const mongoose = require('mongoose');
     // Usuario Model
 require('../models/usuarioSchema');
 const Usuario = mongoose.model('usuarios');
+    // bcrypt - criptografar as senhas
+const bcrypt = require('bcryptjs');
+    // passport
+const passport = require('passport');
 
 router.get('/', (req, res) => {
     Usuario.find().sort({date : 'desc'}).then((usuarios) => {
@@ -15,6 +19,18 @@ router.get('/', (req, res) => {
         res.redirect('/');
     });
 
+});
+
+router.get('/login', (req, res) => {
+    res.render('usuarios/login');
+});
+
+router.post('/login/efetuar', passport.authenticate('local', {
+    successRedirect : "/", // caso a autenticação esteja certa, o usuario vai para /
+    failureRedirect : "/usuarios/login", // caso esteja errada, o usuario vai para login
+    failureFlash : true
+}), (req, res, next) => {
+    res.redirect('/');
 });
 
 router.get('/registrar', (req, res) => {
@@ -29,8 +45,6 @@ router.post('/registrar/novo', (req, res) => {
     const senha = req.body.senha;
     const confirmaSenha = req.body.confirmaSenha;
     let erros = [];
-    console.log(senha, confirmaSenha);
-    let arrobaFinal = '@';
 
     if(!nome ||nome.length < 1) {
         erros.push({texto : 'nome inválido!'});
@@ -51,7 +65,7 @@ router.post('/registrar/novo', (req, res) => {
         res.render('usuarios/formRegistro', {error : erros})
     }else{
 
-        arrobaFinal += nomeUsuario;
+        const arrobaFinal = '@' + nomeUsuario.replace(/@/g, '');
 
     // verificando se o usuário já está cadastrado
     Usuario.find({arroba : arrobaFinal}).then((usuario) => {
@@ -64,22 +78,34 @@ router.post('/registrar/novo', (req, res) => {
                     req.flash('error_msg','nome de usuário ou email já utilizados em outra conta!');
                     res.redirect('/usuarios/registrar');
                 }else{
-                    const newUsuario = {
+
+
+                    const newUsuario = new Usuario({
                         nome : nome,
                         arroba : arrobaFinal,
                         biografia : biografia,
                         email : email,
                         senha : senha
-                    }
-                    new Usuario(newUsuario).save().then(() => {
-                        req.flash('success_msg', 'usuário salvo com sucesso!');
-                        res.redirect('/usuarios/');
-                    }).catch((err) => {
-                        req.flash('error_msg', 'Erro ao salvar os dados!');
-                        res.redirect('/usuarios/registrar');
+                    }); 
+                    // agora vamos criptografar a senha com o bcrypt:
+                    bcrypt.genSalt(8, (err, salt) => {
+                        bcrypt.hash(newUsuario.senha, salt, (err, hash) => {
+                            if(err){
+                                req.flash('error_msg','houve um erro interno ao processar os dados!');
+                                res.redirect('/usuarios/registrar');
+                            }
+                            newUsuario.senha = hash;
+
+                            newUsuario.save().then(() => {
+                                req.flash('success_msg', 'usuário salvo com sucesso!');
+                                res.redirect('/usuarios/');
+                            }).catch((err) => {
+                                req.flash('error_msg', 'Erro ao salvar os dados!');
+                                res.redirect('/usuarios/registrar');
+                            });
+                        });
                     });
                 }
-                
             }).catch((err) => {
                 req.flash('error_msg', 'Erro ao verificar se o usuario já existe!');
                 res.redirect('/usuarios/');

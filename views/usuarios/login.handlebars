@@ -1,0 +1,16 @@
+<h1>Faça seu login: </h1>
+<div class="card mt-2">
+    <div class="card-body">
+        <form action="/usuarios/login/efetuar" method="POST">
+            <label for="arroba">Nome de usuário: </label>
+            <input type="text" name="arroba" class="form-control" placeholder="Digite seu nome de usuário">
+
+            <label for="senha" class="mt-1">Senha: </label>
+            <input type="password" name="senha" class="form-control" placeholder="Digite a sua senha">
+
+            <button type="submit" class="btn btn-success mt-2">Enviar</button>
+        </form>
+        <h3 class="mt-2">Não possui cadastro? cadastre-se no link abaixo: </h3>
+        <a href="/usuarios/registrar"><button class="btn btn-sm">Cadastrar</button></a>
+    </div>
+</div>
