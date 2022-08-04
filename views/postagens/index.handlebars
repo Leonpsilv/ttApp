@@ -1,0 +1,11 @@
+<h2>Faça um tuíte: </h2>
+<div class="card">
+    <div class="card-body">
+        <form action="/postagens/adicionar" method="POST">
+            <label for="conteudo" class="mt-2">Conteúdo: </label>
+            <textarea name="conteudo" cols="30" rows="10" class="form-control mt-1" placeholder="Digite aqui o conteúdo de seu tuíte"></textarea>
+            <input type="hidden" name="id" value="{{usuario._id}}">
+            <button class="btn btn-sm btn-primary mt-2" type="submit">Publicar</button>
+        </form>
+    </div>
+</div>

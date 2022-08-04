@@ -10,6 +10,9 @@ const Usuario = mongoose.model('usuarios');
 const bcrypt = require('bcryptjs');
     // passport
 const passport = require('passport');
+    // postagens
+require('../models/postagemSchema');
+const Postagem = mongoose.model('postagens');
 
 router.get('/', (req, res) => {
     Usuario.find().sort({date : 'desc'}).then((usuarios) => {
@@ -208,6 +211,21 @@ router.get('/apagar/:id', (req, res) => {
         req.flash('error_msg', 'Falha ao apagar usuário!');
         res.redirect('/usuarios/');
     });
+});
+
+router.get('/eu', (req, res) => {
+    if(req.user){
+        Postagem.find({usuario : req.user._id}).sort({date : 'desc'}).then((postagens) => {
+            res.render('usuarios/meuPerfil', {postagens : postagens});
+        }).catch((err) => {
+            console.log('deu erro aqui : ' + err);
+        });
+        
+    }
+    else{
+        req.flash('error_msg', 'Você deve estar logado para postar algo!');
+        res.redirect('/usuarios/login');
+    }
 });
 
 module.exports = router;

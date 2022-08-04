@@ -74,6 +74,10 @@ app.get('/', (req, res) => {
     const usuario = require('./routes/usuarios');
     app.use('/usuarios', usuario);
 
+    // postagens
+    const postagem = require('./routes/postagens');
+    app.use('/postagens', postagem);
+
 /// Outros
 app.listen(PORT, () => {
     console.log('servidor está rodando, na porta: ' + PORT);

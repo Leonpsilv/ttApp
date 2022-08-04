@@ -10,6 +10,10 @@ const Postagem = new Schema({
         type : Schema.Types.ObjectId, // por meio do id do usuario
         ref : "usuarios", // conseguimos fazer relação com a collection usuarios
         required : true
+    },
+    date : {
+        type : Date,
+        default : Date.now()
     }
 });
 
