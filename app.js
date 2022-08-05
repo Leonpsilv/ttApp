@@ -14,6 +14,9 @@ const session = require('express-session');
     //auth
 const passport = require('passport');
 require('./config/auth')(passport);
+    // postagens
+require('./models/postagemSchema');
+const Postagem = mongoose.model('postagens');
 
 
 
@@ -67,7 +70,12 @@ require('./config/auth')(passport);
 
 /// Rotas
 app.get('/', (req, res) => {
-    res.render('public/index');
+    Postagem.find().sort({date : 'desc'}).then((postagens) => {
+        res.render('public/index', {postagens : postagens});
+    }).catch((err) => {
+        res.send('INTERNAL ERROR :(');
+    });
+
 });
 
     // usuarios
