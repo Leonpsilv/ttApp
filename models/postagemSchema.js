@@ -6,12 +6,12 @@ const Postagem = new Schema({
         type : String,
         required : true
     },
+    usuarioId : {
+        type : Schema.Types.ObjectId, // por meio do id do usuario
+        ref : "usuarios", // conseguimos fazer relação com a collection usuarios
+        required : true
+    },
     usuario : {
-        id : {
-            type : Schema.Types.ObjectId, // por meio do id do usuario
-            ref : "usuarios", // conseguimos fazer relação com a collection usuarios
-            required : true
-        },
         nome : {
             type : Schema.Types.String,
             ref : "usuarios",

@@ -31,8 +31,8 @@ router.post('/adicionar', (req, res) => {
     if(usuarioLogado){
         const newPostagem = new Postagem({
             conteudo : conteudo,
+            usuarioId : req.user._id,
             usuario : {
-                id : req.user._id,
                 nome : req.user.nome,
                 arroba : req.user.arroba
             }

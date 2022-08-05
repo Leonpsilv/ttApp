@@ -162,6 +162,34 @@ router.post('/editar', (req, res) => {
     
     const arrobaFinal = '@' + nomeUsuario.replace(/@/g, '');
 
+function atualizaPostagens (usuario) {
+    const usuarioId = usuario._id;
+    console.log('id: ' + usuarioId);
+
+    Postagem.find({usuarioId : usuarioId}).then((postagens) => {
+        postagens.forEach(function(postagem){
+            postagem.usuario = {
+                nome : usuario.nome,
+                arroba : usuario.arroba
+            };
+            postagem.save().then(() => {
+                console.log('conseguimos fml');
+            }).catch((err) => {
+                console.log('erro dentro do forEach: ' + err);
+            });
+        })/*.then(() => {
+            req.flash('success_msg', 'usuário editado com sucesso!');
+            res.redirect('/usuarios/');
+        }).catch((err) => {
+            console.log('deu erro na parte do forEach: ' + err);
+        }); */
+        
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível atualizar os dados nas postagens' + err);
+        res.redirect('/usuarios/eu');
+    });
+}
+
 function salvaNoBanco (id) {
     Usuario.findOne({_id : id}).then((usuario) => {
         usuario.nome = nome;
@@ -170,12 +198,13 @@ function salvaNoBanco (id) {
         usuario.senha = senha;
 
         usuario.save().then(() => {
-            req.flash('success_msg', 'usuário editado com sucesso!');
-            res.redirect('/usuarios/');
+            atualizaPostagens(usuario);
+
         }).catch((err) => {
             req.flash('error_msg', 'ERRO INTERNO: não foi possível salvar as alterações');
             res.redirect('/usuarios/');
         });
+        
     }).catch((err) => {
         console.log('deu merda: '+ err);
     });
@@ -215,12 +244,7 @@ router.get('/apagar/:id', (req, res) => {
 
 router.get('/eu', (req, res) => {
     if(req.user){
-        const usuario = {
-            id : req.user._id,
-            nome : req.user.nome,
-            arroba : req.user.arroba
-        }
-        Postagem.find({usuario : usuario}).sort({date : 'desc'}).then((postagens) => {
+        Postagem.find({usuarioId : req.user._id}).sort({date : 'desc'}).then((postagens) => {
             res.render('usuarios/meuPerfil', {postagens : postagens});
         }).catch((err) => {
             console.log('deu erro aqui : ' + err);
