@@ -215,12 +215,16 @@ router.get('/apagar/:id', (req, res) => {
 
 router.get('/eu', (req, res) => {
     if(req.user){
-        Postagem.find({usuario : req.user._id}).sort({date : 'desc'}).then((postagens) => {
+        const usuario = {
+            id : req.user._id,
+            nome : req.user.nome,
+            arroba : req.user.arroba
+        }
+        Postagem.find({usuario : usuario}).sort({date : 'desc'}).then((postagens) => {
             res.render('usuarios/meuPerfil', {postagens : postagens});
         }).catch((err) => {
             console.log('deu erro aqui : ' + err);
         });
-        
     }
     else{
         req.flash('error_msg', 'Você deve estar logado para postar algo!');

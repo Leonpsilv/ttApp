@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
     // Postagem Model
 require('../models/postagemSchema');
 const Postagem = mongoose.model('postagens');
+    // Usuario Model
+require('../models/usuarioSchema');
+const Usuario = mongoose.model('usuarios');
 
 router.get('/', (req, res) => {
     const usuarioLogado = req.user;
@@ -22,13 +25,17 @@ router.post('/adicionar', (req, res) => {
     const conteudo = req.body.conteudo;
     const usuarioLogado = req.user;
     if(conteudo.length < 0){
-        req.flash('error_msg', 'digite alguma coisa para ser publicada!');
+        req.flash('error_msg', 'a publicação não pode estar vazia!');
         res.redirect('/postagens/');
     }
     if(usuarioLogado){
         const newPostagem = new Postagem({
             conteudo : conteudo,
-            usuario : req.user
+            usuario : {
+                id : req.user._id,
+                nome : req.user.nome,
+                arroba : req.user.arroba
+            }
         });
         newPostagem.save().then(() => {
             req.flash('success_msg', 'Publicado com sucesso!');

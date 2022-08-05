@@ -7,9 +7,21 @@ const Postagem = new Schema({
         required : true
     },
     usuario : {
-        type : Schema.Types.ObjectId, // por meio do id do usuario
-        ref : "usuarios", // conseguimos fazer relação com a collection usuarios
-        required : true
+        id : {
+            type : Schema.Types.ObjectId, // por meio do id do usuario
+            ref : "usuarios", // conseguimos fazer relação com a collection usuarios
+            required : true
+        },
+        nome : {
+            type : Schema.Types.String,
+            ref : "usuarios",
+            required : true
+        },
+        arroba : {
+            type : Schema.Types.String,
+            ref : "usuarios",
+            required : true
+        }
     },
     date : {
         type : Date,
