@@ -166,23 +166,24 @@ function atualizaPostagens (usuario) {
     const usuarioId = usuario._id;
     console.log('id: ' + usuarioId);
 
+    let erros = [];
+
     Postagem.find({usuarioId : usuarioId}).then((postagens) => {
         postagens.forEach(function(postagem){
             postagem.usuario = {
                 nome : usuario.nome,
                 arroba : usuario.arroba
             };
-            postagem.save().then(() => {
-                console.log('conseguimos fml');
-            }).catch((err) => {
-                console.log('erro dentro do forEach: ' + err);
+            postagem.save().then(() => {}).catch((err) => {
+                erros = {texto : 'Houve um erro ao atualizar as postagens com os novos dados'};
             });
-        })/*.then(() => {
-            req.flash('success_msg', 'usuário editado com sucesso!');
+        });
+        if(erros.length > 0) {
+            res.render('usuarios/index', {error : erros});
+        }else{
+            req.flash('success_msg', 'Usuario alterado com sucesso!')
             res.redirect('/usuarios/');
-        }).catch((err) => {
-            console.log('deu erro na parte do forEach: ' + err);
-        }); */
+        }
         
     }).catch((err) => {
         req.flash('error_msg', 'Não foi possível atualizar os dados nas postagens' + err);
@@ -199,7 +200,6 @@ function salvaNoBanco (id) {
 
         usuario.save().then(() => {
             atualizaPostagens(usuario);
-
         }).catch((err) => {
             req.flash('error_msg', 'ERRO INTERNO: não foi possível salvar as alterações');
             res.redirect('/usuarios/');
