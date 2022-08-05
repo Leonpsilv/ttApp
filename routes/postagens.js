@@ -50,6 +50,17 @@ router.post('/adicionar', (req, res) => {
     }
 });
 
+router.get('/apagar/:id', (req, res) => {
+    const id = req.params.id;
+    Postagem.deleteOne({_id : id}).then(() => {
+        req.flash('success_msg', 'Tuite apagado com sucesso!');
+        res.redirect('/usuarios/eu');
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao apagar tuite!');
+        res.redirect('/usuarios/eu');
+    });
+});
+
 
 
 module.exports = router;
