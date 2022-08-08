@@ -10,6 +10,8 @@ const Postagem = mongoose.model('postagens');
 require('../models/usuarioSchema');
 const Usuario = mongoose.model('usuarios');
 
+const {Logado} = require('../helpers/autenticado');
+
 router.get('/', (req, res) => {
     const usuarioLogado = req.user;
     if(usuarioLogado){
@@ -20,7 +22,7 @@ router.get('/', (req, res) => {
     }
 });
 
-router.post('/adicionar', (req, res) => {
+router.post('/adicionar', Logado, (req, res) => {
     //const id = req.body.id
     const conteudo = req.body.conteudo;
     const usuarioLogado = req.user;
@@ -50,7 +52,7 @@ router.post('/adicionar', (req, res) => {
     }
 });
 
-router.get('/apagar/:id', (req, res) => {
+router.get('/apagar/:id', Logado, (req, res) => {
     const id = req.params.id;
     Postagem.deleteOne({_id : id}).then(() => {
         req.flash('success_msg', 'Tuite apagado com sucesso!');

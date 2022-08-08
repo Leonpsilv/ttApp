@@ -14,6 +14,8 @@ const passport = require('passport');
 require('../models/postagemSchema');
 const Postagem = mongoose.model('postagens');
 
+const {Logado} = require('../helpers/autenticado');
+
 router.get('/', (req, res) => {
     Usuario.find().sort({date : 'desc'}).then((usuarios) => {
         res.render('usuarios/index', {usuarios : usuarios});
@@ -133,7 +135,7 @@ router.post('/registrar/novo', (req, res) => {
    
 });
 
-router.get('/editar/:arroba', (req, res) => {
+router.get('/editar/:arroba', Logado, (req, res) => {
     const arroba = req.params.arroba;
     Usuario.findOne({arroba : arroba}).then((usuario) => {
         if(usuario){
@@ -148,7 +150,7 @@ router.get('/editar/:arroba', (req, res) => {
     });
 });
 
-router.post('/editar', (req, res) => {
+router.post('/editar', Logado, (req, res) => {
     const nome = req.body.nome;
     const nomeUsuario = req.body.arroba;
     const biografia = req.body.biografia;
@@ -231,18 +233,24 @@ function salvaNoBanco (id) {
     
 });
 
-router.get('/apagar/:id', (req, res) => {
+router.get('/apagar/:id', Logado, (req, res) => {
     const id = req.params.id;
     Usuario.deleteOne({_id : id}).then(() => {
-        req.flash('success_msg', 'Usuario apagado com sucesso!');
-        res.redirect('/usuarios/');
+        Postagem.deleteMany({usuarioId : id}).then(() =>{
+            req.flash('success_msg', 'Usuario apagado com sucesso!');
+            res.redirect('/usuarios/');
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha ao apagar os dados do usuário!');
+            res.redirect('/usuarios/');
+        });
     }).catch((err) => {
         req.flash('error_msg', 'Falha ao apagar usuário!');
         res.redirect('/usuarios/');
     });
+    
 });
 
-router.get('/eu', (req, res) => {
+router.get('/eu', Logado, (req, res) => {
     if(req.user){
         Postagem.find({usuarioId : req.user._id}).sort({date : 'desc'}).then((postagens) => {
             res.render('usuarios/meuPerfil', {postagens : postagens});
@@ -251,7 +259,7 @@ router.get('/eu', (req, res) => {
         });
     }
     else{
-        req.flash('error_msg', 'Você deve estar logado para postar algo!');
+        req.flash('error_msg', 'Você deve estar logado para acessar essa página!');
         res.redirect('/usuarios/login');
     }
 });
