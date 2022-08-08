@@ -1,17 +1,16 @@
-<h1>Perfil pessoal</h1>
+<a href="/usuarios/"><button class="btn btn-sm"> voltar </button></a>
+
+<h1>{{usuario.nome}}</h1>
+<h4>{{usuario.arroba}}</h4>
+<br>
+        <h4 class="mt-3">{{usuario.biografia}}</h4>
+        <small class="mt-1 mb-1 m-2">Seguindo : {{usuario.seguindo.length}}</small>
+        <small class="mt-1 mb-1 m-2">Seguidores : {{usuario.seguidores.length}}</small>
+        <br>
+        <hr class="my-4 mt-2">
 <div class="card">
     <div class="card-body">
-        <h2>{{users.nome}}</h2>
-        <small>{{users.arroba}}</small>
-        <h4 class="mt-3">{{users.biografia}}</h4>
-        <small class="mt-1 mb-1 m-2">Seguindo : {{users.seguindo.length}}</small>
-        <small class="mt-1 mb-1 m-2">Seguidores : {{users.seguidores.length}}</small>
-        <br>
-        <a href="/usuarios/editar/{{users.arroba}}"><button class="btn btn-sm btn-primary m-1">editar perfil</button></a>
-        <hr class="my-4 mt-2">
         <div class="bg-light p-5 rounded-lg m-3">
-        <a href="/postagens/"><button class="btn btn-primary">TUITAR</button></a>
-        <hr class="my-4">
         <h3>Posts: </h3>
             {{#each postagens}}
                 <div class="card mt-2">
@@ -27,7 +26,7 @@
                     </div>
                 </div>
             {{else}}
-                <h1>você ainda não possui postagens :( </h1>
+                <h1>Este usuário ainda não possui postagens :( </h1>
             {{/each}}
         </div>
     </div>

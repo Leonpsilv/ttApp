@@ -113,7 +113,7 @@ router.post('/registrar/novo', (req, res) => {
 
                             newUsuario.save().then(() => {
                                 req.flash('success_msg', 'usuário salvo com sucesso!');
-                                res.redirect('/usuarios/');
+                                res.redirect('/usuarios/login');
                             }).catch((err) => {
                                 req.flash('error_msg', 'Erro ao salvar os dados!');
                                 res.redirect('/usuarios/registrar');
@@ -262,6 +262,16 @@ router.get('/eu', Logado, (req, res) => {
         req.flash('error_msg', 'Você deve estar logado para acessar essa página!');
         res.redirect('/usuarios/login');
     }
+});
+
+router.get('/perfil/:arroba', (req, res) => {
+    const arroba = req.params.arroba;
+    Usuario.findOne({arroba : arroba}).then((usuario) => {
+        res.render('usuarios/perfil', {usuario : usuario});
+    }).catch((err) => {
+        req.flash('error_msg', 'Falha ao procurar usuário!');
+        res.redirect('/usuarios/');
+    });
 });
 
 module.exports = router;
