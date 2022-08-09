@@ -284,7 +284,6 @@ router.get('/seguir/:arroba', Logado, (req, res)=> {
     }else{
         Usuario.findOne({_id : usuarioLogado._id}).then((usuLogado) => {
             Usuario.findOne({arroba : usuarioEscolhido}).then((usuEscolhido) => {
-                    //////////////////////////////////////////////////////////// fazer lógica: se já segue, deve deixar de seguir
                     const idEscolhido = usuEscolhido._id;
                     const index = usuLogado.seguindo.indexOf(idEscolhido, 0);
                     if (index === -1) {
