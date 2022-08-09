@@ -76,7 +76,7 @@ router.get('/curtir/:id', Logado, (req, res) => {
                 postagem.curtidas.splice(index, 1);
             }
             postagem.save().then(() => {
-                res.redirect('/');
+                res.redirect('back'); // redireciona para a mesma página!
             }).catch((err) => {
                 req.flash('error_msg', 'Erro ao curtir/descurtir publicação!');
                 res.redirect('/');
