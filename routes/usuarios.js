@@ -336,4 +336,14 @@ router.get('/seguir/:arroba', Logado, (req, res)=> {
 
 });
 
+router.get('/seguindo', Logado, (req, res) => {
+    const usuario = req.user;
+    Postagem.find({usuarioId : usuario.seguindo}).then((postagens) => {
+        res.render('usuarios/seguindo', {postagens : postagens});
+    }).catch((err) => {
+        req.flash('error_msg', 'Não foi possível carregar a página!');
+        res.redirect('/');
+    });
+});
+
 module.exports = router;
