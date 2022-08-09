@@ -274,4 +274,45 @@ router.get('/perfil/:arroba', (req, res) => {
     });
 });
 
+router.get('/seguir/:arroba', Logado, (req, res)=> {
+    const usuarioEscolhido = req.params.arroba;
+    const usuarioLogado = req.user;
+
+    if(usuarioLogado.arroba === usuarioEscolhido) {
+        req.flash('error_msg', 'Você não pode seguir a si mesmo!');
+        res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+    }else{
+        Usuario.findOne({_id : usuarioLogado._id}).then((usuLogado) => {
+            Usuario.findOne({arroba : usuarioEscolhido}).then((usuEscolhido) => {
+                    //////////////////////////////////////////////////////////// fazer lógica: se já segue, deve deixar de seguir
+                    usuLogado.seguindo.push(usuEscolhido._id);
+                    usuLogado.save().then(() => {
+                        usuEscolhido.seguidores.push(usuLogado._id);
+                        usuEscolhido.save().then(() => {
+                            req.flash('success_msg', 'Você seguiu' + usuEscolhido.nome);
+                            res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+                        }).catch((err) => {
+                            req.flash('error_msg', 'Não foi possível realizar essa operação!');
+                            res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+                        });
+                    }).catch(() => {
+                        req.flash('error_msg', 'Não foi possível realizar essa operação!');
+                        res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+                    }); 
+
+            }).catch((err) => {
+                req.flash('error_msg', 'Falha interna ao encontrar usuário! ');
+                res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+            });
+            /* usuario.seguindo.forEach(function (seguido) {
+                console.log(seguido);
+            }); */
+        }).catch((err) => {
+            req.flash('error_msg', 'Falha interna ao identificar usuario logado!');
+            res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+        });
+    }
+
+});
+
 module.exports = router;

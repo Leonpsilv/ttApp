@@ -24,6 +24,14 @@ const Usuario = new Schema({
     date : {
         type : Date,
         default : Date.now()
+    },
+    seguindo : {
+        type : Array,
+        default : []
+    },
+    seguidores : {
+        type : Array,
+        default : []
     }
 });
 
