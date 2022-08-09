@@ -26,6 +26,10 @@ const Postagem = new Schema({
     date : {
         type : Date,
         default : Date.now()
+    },
+    curtidas : {
+        type : Array,
+        default : []
     }
 });
 

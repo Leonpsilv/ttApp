@@ -63,6 +63,31 @@ router.get('/apagar/:id', Logado, (req, res) => {
     });
 });
 
+router.get('/curtir/:id', Logado, (req, res) => {
+    const id = req.params.id;
+    const usuario = req.user;
+
+    Postagem.findOne({_id : id}).then((postagem) => {
+        if(usuario){
+            const index = postagem.curtidas.indexOf(usuario._id, 0);
+            if(index === -1) {
+                postagem.curtidas.push(usuario._id);
+            }else{
+                postagem.curtidas.splice(index, 1);
+            }
+            postagem.save().then(() => {
+                res.redirect('/');
+            }).catch((err) => {
+                req.flash('error_msg', 'Erro ao curtir/descurtir publicação!');
+                res.redirect('/');
+            });
+        }
+    }).catch((err) => {
+        req.flash('error_msg' , 'Postagem não encontrada!');
+        res.redirect('/');
+    });
+});
+
 
 
 module.exports = router;
