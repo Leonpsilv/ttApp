@@ -285,23 +285,51 @@ router.get('/seguir/:arroba', Logado, (req, res)=> {
         Usuario.findOne({_id : usuarioLogado._id}).then((usuLogado) => {
             Usuario.findOne({arroba : usuarioEscolhido}).then((usuEscolhido) => {
                     //////////////////////////////////////////////////////////// fazer lógica: se já segue, deve deixar de seguir
-                    usuLogado.seguindo.push(usuEscolhido._id);
+                    let seguindo = usuLogado.seguindo;
+                    let index = null;
+                    console.log('tamanho do seguindo: ' + usuLogado.seguindo.length);
+                    for (let i = 0; i <= usuLogado.seguindo.length; i++) {
+                        console.log('i: ' + i);
+                        if(JSON.stringify(seguindo[i]) == JSON.stringify(usuEscolhido._id)){
+                            console.log('já segue');
+                            index = i;
+                            console.log('index : ' + index);
+                        }else {
+                            console.log('dentro do else : ');
+                            console.log(JSON.stringify(usuLogado.seguindo[i]) == JSON.stringify(usuEscolhido._id));
+                            console.log('não segue');
+                            console.log(JSON.stringify(usuLogado.seguindo[i]) + ' || ' + JSON.stringify(usuEscolhido._id));
+                        }
+                    }
+                    
+                     if (index) {
+                        usuLogado.seguindo = seguindo.splice(index, 1);
+                    }else{
+                        usuLogado.seguindo.push(usuEscolhido._id);
+                    }
+                    console.log('resultado final: ' + usuLogado.seguindo);
                     usuLogado.save().then(() => {
-                        usuEscolhido.seguidores.push(usuLogado._id);
-                        usuEscolhido.save().then(() => {
-                            req.flash('success_msg', 'Você seguiu' + usuEscolhido.nome);
-                            res.redirect('/usuarios/perfil/' + usuarioEscolhido);
-                        }).catch((err) => {
-                            req.flash('error_msg', 'Não foi possível realizar essa operação!');
-                            res.redirect('/usuarios/perfil/' + usuarioEscolhido);
-                        });
+                        //usuEscolhido.seguidores.push(usuLogado._id);
+                        //usuEscolhido.save().then(() => {
+                            console.log('----------------------------------------------------')
+                            if(!index){
+                                req.flash('success_msg', 'Você seguiu ' + usuEscolhido.nome);
+                                res.redirect('/usuarios/perfil/' + usuarioEscolhido); 
+                            }else{
+                                req.flash('success_msg', 'Você deixou de seguir ' + usuEscolhido.nome);
+                                res.redirect('/usuarios/perfil/' + usuarioEscolhido); 
+                            }
+                        //}).catch((err) => {
+                        //   req.flash('error_msg', 'Não foi possível realizar essa operação!');
+                        //   res.redirect('/usuarios/perfil/' + usuarioEscolhido);
+                        //}); 
                     }).catch(() => {
                         req.flash('error_msg', 'Não foi possível realizar essa operação!');
                         res.redirect('/usuarios/perfil/' + usuarioEscolhido);
                     }); 
-
+                    
             }).catch((err) => {
-                req.flash('error_msg', 'Falha interna ao encontrar usuário! ');
+                req.flash('error_msg', 'Falha interna ao encontrar usuário! ' + err);
                 res.redirect('/usuarios/perfil/' + usuarioEscolhido);
             });
             /* usuario.seguindo.forEach(function (seguido) {
